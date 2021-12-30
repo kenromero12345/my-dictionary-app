@@ -50,7 +50,7 @@ class App extends React.Component {
   }
 
   handleClickSearch(event) {
-    this.setState({message: "Loading...", flagFilter: false}, () => {
+    this.setState({message: "Loading...", flagFilter: false, filterWord: ""}, () => {
         dict.getInfo(this.state.word).then((response) => {
           if (response.valid) {
             // console.log(response.response)
