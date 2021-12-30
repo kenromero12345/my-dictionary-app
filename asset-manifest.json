@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/my-dictionary-app/static/css/main.073c9b0a.css",
-    "main.js": "/my-dictionary-app/static/js/main.12331406.js",
+    "main.js": "/my-dictionary-app/static/js/main.db828573.js",
     "static/js/787.cfd8f164.chunk.js": "/my-dictionary-app/static/js/787.cfd8f164.chunk.js",
     "index.html": "/my-dictionary-app/index.html",
     "main.073c9b0a.css.map": "/my-dictionary-app/static/css/main.073c9b0a.css.map",
-    "main.12331406.js.map": "/my-dictionary-app/static/js/main.12331406.js.map",
+    "main.db828573.js.map": "/my-dictionary-app/static/js/main.db828573.js.map",
     "787.cfd8f164.chunk.js.map": "/my-dictionary-app/static/js/787.cfd8f164.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.073c9b0a.css",
-    "static/js/main.12331406.js"
+    "static/js/main.db828573.js"
   ]
 }
