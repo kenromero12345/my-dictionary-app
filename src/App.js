@@ -81,7 +81,7 @@ class App extends React.Component {
               </div>)});
             }
           } else {
-            this.setState({ data: null, message: "No Results"});
+            this.setState({ data: null, message: "No Results - Unexpected Error"});
           }
         })
       }
