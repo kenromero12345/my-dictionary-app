@@ -23,21 +23,62 @@ class App extends React.Component {
     this.state = {
       word: "",
       data: null,
-      message: ""
+      message: "",
+      filterComp: null,
+      filterWord: "",
+      flagFilter: false,
+      currentFilterWord: ""
+
     };
-    this.handleClick = this.handleClick.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    this.handleClickSearch = this.handleClickSearch.bind(this);
+    this.handleChangeSearch = this.handleChangeSearch.bind(this);
+    this.handleChangeFilter = this.handleChangeFilter.bind(this);
+    this.handleClickFilter = this.handleClickFilter.bind(this);
   }
 
-  handleClick(event) {
-    this.setState({message: "Loading..."}, () => {
+  handleChangeFilter(event) {
+    this.setState({filterWord: event.target.value,});
+    
+  }
+
+  handleClickFilter(event) {
+    if (this.state.filterWord == "") {
+      this.setState({flagFilter: false, currentFilterWord: ""});
+    } else {
+      this.setState({flagFilter: true, currentFilterWord: this.state.filterWord});
+    }
+  }
+
+  handleClickSearch(event) {
+    this.setState({message: "Loading...", flagFilter: false}, () => {
         dict.getInfo(this.state.word).then((response) => {
           if (response.valid) {
             // console.log(response.response)
-            if (response.response.data[0].meanings.length == 0) {
-              this.setState({ data: response.response.data[0].meanings, message: "No Results"});
+            if (response.response.data.length == 0) {
+              this.setState({ data: null, message: "No Results"});
             } else {
-              this.setState({ data: response.response.data[0].meanings, message: "Showing " + response.response.data[0].meanings.length + " Results"});
+              var count = 0;
+              var list = []
+              response.response.data.forEach(element => {
+                // count += element.length;
+                // console.log(element);
+                element.meanings.forEach(e =>{
+                  list.push(e);
+                  count += 1;
+                }
+                )
+              });
+              this.setState({ data: list, message: "Showing " + count + " Results", 
+              filterComp: (
+              <div className="input-group "style={{marginLeft: "5px", marginRight: "5px", marginBottom: "10px"}} >
+              <div className="form-outline" style={{ width: "calc(100% - 50px)"}}>
+                <input type="search" id="form1" className="form-control" placeholder="Filter Part of Speech" onChange={this.handleChangeFilter}  />
+      
+              </div>
+              <button type="button" class="btn btn-primary" onClick={this.handleClickFilter}>
+                <i class="fas fa-filter"></i>
+              </button>
+              </div>)});
             }
           } else {
             this.setState({ data: null, message: "No Results"});
@@ -48,7 +89,7 @@ class App extends React.Component {
 
   }
 
-  handleChange(event) {
+  handleChangeSearch(event) {
     this.setState({word: event.target.value});
   }
 
@@ -56,52 +97,28 @@ class App extends React.Component {
     return (
       <div className="App" style={{ textAlign: "center", overflowX: "hidden" }}>
         <h1>Dictionary</h1>
-        <div className="input-group "style={{marginLeft: "5px", marginRight: "5px"}} >
+        <div className="input-group "style={{marginLeft: "5px", marginRight: "5px", marginBottom: "10px"}} >
         <div className="form-outline" style={{ width: "calc(100% - 50px)"}}>
-          <input type="search" id="form1" className="form-control" placeholder="Search" onChange={this.handleChange}  />
-          {/* <label class="form-label" for="form1">Search</label> */}
+          <input type="search" id="form1" className="form-control" placeholder="Search" onChange={this.handleChangeSearch
+    }  />
+
         </div>
-        <button type="button" class="btn btn-primary" onClick={this.handleClick}>
+        <button type="button" class="btn btn-primary" onClick={this.handleClickSearch}>
           <i className="fas fa-search"></i>
         </button>
       </div>
-        {/* <label style={{ marginRight: "5px"}} >Word</label>
-        <input
-          type="text"
-          value={this.state.word}
-          style={{ width: "80%" }}
-          onChange={this.handleChange}
-        />
-        <button type="button" onClick={this.handleClick} style={{ marginLeft: "5px", padding: "0", border: "none", background: "none", cursor: "pointer"}}>
-        <i className="fas fa-search" ></i>
-        </button> */}
         
-        {/* <button type="button" onClick={this.handleClick} style={{ marginLeft: "5px"}}>
-          Search
-        </button> */}
-        {/* <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header> */}
-        
-        <div style={{marginTop: "5px", marginBottom: "5px", marginLeft: "5px", marginRight: "5px"}}>
+        <div>
           {this.state.data != null ?
             <div>
               <p>{this.state.message}</p>
+              {this.state.filterComp}
               {
-              this.state.data.map((item, index) => (
-                  
-                <Meaning key={index} index={index} data={item} />
+              
+              this.state.data.filter(word => !this.state.flagFilter || word.partOfSpeech == this.state.currentFilterWord).map((word, index) => (
+                  <div style={{marginTop: "5px", marginBottom: "5px", marginLeft: "5px", marginRight: "5px"}}>
+                  <Meaning key={index} index={index} data={word} /> 
+                  </div>
               ))
               }
             </div> :
@@ -131,7 +148,17 @@ class Meaning extends React.Component {
     };
     // console.log(color)
   }
+  static getDerivedStateFromProps(props, state) {
 
+            if (props !== state) {
+
+                return {
+                    data: props.data
+                };
+            }
+
+            return null;
+        }
   render() {
     return (
       <div style={{border: '1px solid black', marginTop: "5px", background: this.state.color, color: this.state.textColor}}>
