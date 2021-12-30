@@ -1,4 +1,5 @@
 {
+  "homepage": "https://kenromero12345.github.io/my-dictionary-app/",
   "name": "my-app",
   "version": "0.1.0",
   "private": true,
@@ -14,6 +15,8 @@
     "web-vitals": "^2.1.2"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "master -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
